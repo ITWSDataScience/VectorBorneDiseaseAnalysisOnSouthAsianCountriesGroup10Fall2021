@@ -75,6 +75,14 @@ def main():
   )
   print("Finished collapsing temperature data map")
 
+  temp_df = combine_data_to_be_yearly_average_per_district(
+    countries = countries,
+    df = pd.read_csv("../data/individual_data_sets/temperature_data/temperature_data_serbia_pakistan_afghanistan.csv")
+    #df = temp_df
+  )
+
+  temp_df.to_csv("yearly_temperature_data_by_district.csv", index = False)
+
 def extract_arguments() -> Iterable[Union[str, list, bool]]:
   """
   Purpose: extracts the arguments specified by the user
@@ -141,6 +149,8 @@ def retrieve_nasa_data(filepath: str, download_data: bool) -> list:
         time.sleep(5)
 
   for link in links:
+    if os.path.isfile(link) is False:
+      continue
     file_link_path = link.split("/")
     queried_file_name = file_link_path[-1].strip()
     file_name = queried_file_name.split(".nc4?")[0]
@@ -282,6 +292,54 @@ def collapse_temperature_data(temp_data_map: dict, countries: list) -> pd.DataFr
   temp_df.to_csv(temp_df_save_name, index=False)
 
   return temp_df
+
+def combine_data_to_be_yearly_average_per_district(countries: list, df: pd.DataFrame):
+
+  """
+  Steps:
+    1. Filter on each country
+    2. Filter on each year
+    3. Filter on each district
+    4. Compute the average of each district in that year
+  """
+
+  yearly_district_avg_df = {
+    COUNTRY_KEY : [],
+    DISTRICT_KEY : [],
+    YEAR_KEY : [],
+    TEMP_KEY : []
+  }
+
+  for country in countries:
+
+    country_df = df[df[COUNTRY_KEY] == country]
+    # Now we need to grab a list of unique values for every year
+    years = set(country_df[YEAR_KEY].values)
+
+    for year in years:
+      # Now we shall filter off of the districts
+      yearly_country_df = country_df[country_df[YEAR_KEY] == year]
+      
+      # We need to get all of the districts
+      districts = set(yearly_country_df[DISTRICT_KEY].values)
+
+      for district in districts:        
+        temperature_average = 0
+        temperature_sum = 0
+
+        district_df = yearly_country_df[yearly_country_df[DISTRICT_KEY] == district]
+
+        for idx, row in district_df.iterrows():
+          temperature_sum += row[TEMP_KEY]
+
+        temperature_average = temperature_sum/len(district_df.index)
+
+        yearly_district_avg_df[COUNTRY_KEY].append(country)
+        yearly_district_avg_df[DISTRICT_KEY].append(district)
+        yearly_district_avg_df[YEAR_KEY].append(year)
+        yearly_district_avg_df[TEMP_KEY].append(temperature_average)
+    
+  return pd.DataFrame(yearly_district_avg_df)
 
 if __name__ == "__main__":
   main()

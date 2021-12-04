@@ -33,23 +33,40 @@ VGI_DISTRICT_COL = "district"
 VGI_YEAR_COL = "year"
 VGI_AVG_NVDI_VAL = "Avg. NVDI Val"
 
+# Data set filepath and column information for Precipitation Data
+PRECIPITATION_FILEPATH = "../data/individual_data_sets/precipitation_data/yearly_precipitation_data_by_district.csv"
+COUNTRY_PRECIPITATION_COUNTRY_COL = "country"
+COUNTRY_PRECIPITATION_DISTRICT_COL = "district" 
+COUNTRY_PRECIPITATION_YEAR_COL = "year" 
+COUNTRY_PRECIPITATION_COL = "PRECTOTLAND kg m-2 s-1"
+
+# Data set filepath and column information for Temperature Data
+TEMPERATURE_FILEPATH = "../data/individual_data_sets/temperature_data/yearly_temperature_data_by_district.csv"
+COUNTRY_TEMPERATURE_COUNTRY_COL = "country"
+COUNTRY_TEMPERATURE_DISTRICT_COL = "district" 
+COUNTRY_TEMPERATURE_YEAR_COL = "year" 
+COUNTRY_TEMPERATURE_COL = "temperature in (K)"
+
 # Plots directory
 PLOTS_DIR = "../plots"
 
 def main():
   cchf_df = retrieve_data(filepath=CCHF_PROMED_DATA_FILEPATH)
   vgi_df = retrieve_data(filepath=VGI_DATA_FILEPATH)
+  precipitation_df = retrieve_data(filepath=PRECIPITATION_FILEPATH)
+  temperature_data = retrieve_data(filepath=TEMPERATURE_FILEPATH)
 
   cchf_district_df = construct_district_cchf_yearly_cases_and_deaths_df(
     cchf_df = cchf_df
   )
+  cchf_district_df[CCHF_YEAR_COL] = cchf_district_df[CCHF_YEAR_COL].astype(int)
 
-  vgi_and_cchf_df = combine_vegetation_data_and_cchf_data(
-    cchf_df = cchf_district_df,
-    vgi_df = vgi_df
-  )
+  # Merge the temperature and precipitation data and our combined data
+  vgi_and_cchf_df = cchf_district_df.merge(vgi_df[[VGI_COUNTRY_COL, VGI_DISTRICT_COL, VGI_YEAR_COL, VGI_AVG_NVDI_VAL]])
+  combined_df = vgi_and_cchf_df.merge(precipitation_df[[COUNTRY_PRECIPITATION_COUNTRY_COL, COUNTRY_PRECIPITATION_DISTRICT_COL, COUNTRY_PRECIPITATION_YEAR_COL, COUNTRY_PRECIPITATION_COL]])
+  combined_df = combined_df.merge(temperature_data[[COUNTRY_TEMPERATURE_COUNTRY_COL, COUNTRY_TEMPERATURE_DISTRICT_COL, COUNTRY_TEMPERATURE_YEAR_COL, COUNTRY_TEMPERATURE_COL]])
 
-  vgi_and_cchf_df.to_csv("combined_district_data.csv", index=False)
+  combined_df.to_csv("../data/combined_district_data.csv", index=False)
 
   # gen_timeseries_for_vgi_district_years(
   #   df = vgi_df,
@@ -65,8 +82,8 @@ def main():
   # )
 
   gen_correlation_matrix_for_data(
-    combined_data = vgi_and_cchf_df,
-    columns_to_comp = [CCHF_TOTAL_NUM_OF_CASES_COL, CCHF_TOTAL_NUM_OF_DEATHS_COL, VGI_AVG_NVDI_VAL],
+    combined_data = combined_df,
+    columns_to_comp = [CCHF_TOTAL_NUM_OF_CASES_COL, CCHF_TOTAL_NUM_OF_DEATHS_COL, VGI_AVG_NVDI_VAL, COUNTRY_TEMPERATURE_COL, COUNTRY_PRECIPITATION_COL],
     replace_nas=False
   )
 
@@ -86,6 +103,7 @@ def construct_district_cchf_yearly_cases_and_deaths_df(cchf_df: pd.DataFrame) ->
   """
 
   cchf_yearly_info = {}
+  district_coords_info = {}
 
   # Remove rows for districts we don't have data for
   cchf_df = cchf_df[cchf_df[CCHF_DISTRICT_COL].notna()]
@@ -100,6 +118,8 @@ def construct_district_cchf_yearly_cases_and_deaths_df(cchf_df: pd.DataFrame) ->
     total_cases_that_year = row[CCHF_TOTAL_NUM_OF_CASES_COL]
     total_deaths_that_year = row[CCHF_TOTAL_NUM_OF_DEATHS_COL]
     district = row[CCHF_DISTRICT_COL]
+    district_lat = row[CCHF_CITY_OR_REGION_LAT_COL]
+    district_lon = row[CCHF_CITY_OR_REGION_LON_COL]
 
     # First we need to figure out the year we are currently looking at for this notification
     datem = datetime.datetime.strptime(promed_notice_issue_date, "%m/%d/%Y")
@@ -142,6 +162,14 @@ def construct_district_cchf_yearly_cases_and_deaths_df(cchf_df: pd.DataFrame) ->
         CCHF_TOTAL_NUM_OF_DEATHS_COL: num_of_deaths,
         PROMED_ISSUE_DATE_COL: promed_notice_issue_date,
       }
+
+      # Record the district coordinates information (Pick the first city in the assigned district as coordinates)
+      if district not in district_coords_info:
+        district_coords_info[district] = {
+          CCHF_CITY_OR_REGION_LAT_COL : district_lat,
+          CCHF_CITY_OR_REGION_LON_COL : district_lon
+        }
+
       continue
 
     """
@@ -195,6 +223,8 @@ def construct_district_cchf_yearly_cases_and_deaths_df(cchf_df: pd.DataFrame) ->
     DISEASE_NAME_COL: [],
     COUNTRY_PROMED_COL: [],
     CCHF_DISTRICT_COL: [],
+    CCHF_CITY_OR_REGION_LAT_COL : [],
+    CCHF_CITY_OR_REGION_LON_COL : [],
     CCHF_YEAR_COL: [],
     CCHF_TOTAL_NUM_OF_CASES_COL: [],
     CCHF_TOTAL_NUM_OF_DEATHS_COL: []
@@ -213,30 +243,10 @@ def construct_district_cchf_yearly_cases_and_deaths_df(cchf_df: pd.DataFrame) ->
           cchf_yearly_cases_and_deaths_data[CCHF_YEAR_COL].append(year_key)
           cchf_yearly_cases_and_deaths_data[CCHF_TOTAL_NUM_OF_CASES_COL].append(year_val[CCHF_TOTAL_NUM_OF_CASES_COL])
           cchf_yearly_cases_and_deaths_data[CCHF_TOTAL_NUM_OF_DEATHS_COL].append(year_val[CCHF_TOTAL_NUM_OF_DEATHS_COL])
+          cchf_yearly_cases_and_deaths_data[CCHF_CITY_OR_REGION_LAT_COL].append(district_coords_info[districts_key][CCHF_CITY_OR_REGION_LAT_COL])
+          cchf_yearly_cases_and_deaths_data[CCHF_CITY_OR_REGION_LON_COL].append(district_coords_info[districts_key][CCHF_CITY_OR_REGION_LON_COL])
 
   return pd.DataFrame(cchf_yearly_cases_and_deaths_data)
-
-def combine_vegetation_data_and_cchf_data(cchf_df: pd.DataFrame, vgi_df: pd.DataFrame) -> pd.DataFrame:
-
-  avg_vgi_data_col = []
-  for cchf_idx, cchf_row in cchf_df.iterrows():
-
-    country = cchf_row[COUNTRY_PROMED_COL]
-    district = cchf_row[CCHF_DISTRICT_COL]
-    year = cchf_row[CCHF_YEAR_COL]
-
-    vgi_query_df = vgi_df.query(f'{VGI_COUNTRY_COL} == "{country}" and {VGI_DISTRICT_COL} == "{district}" and {VGI_YEAR_COL} == {year}')
-
-    if vgi_query_df.empty:
-      avg_vgi_data_col.append(math.nan)
-      continue
-    
-    for idx, row in vgi_query_df.iterrows():
-      avg_vgi_data_col.append(row[VGI_AVG_NVDI_VAL])
-
-  cchf_df[VGI_AVG_NVDI_VAL] = avg_vgi_data_col
-
-  return cchf_df
 
 def gen_timeseries_for_vgi_district_years(df: pd.DataFrame, interested_cols: list, title: str, ylabel: str) -> None:
   
@@ -298,6 +308,7 @@ def gen_correlation_matrix_for_data(combined_data: pd.DataFrame, columns_to_comp
 
     for district in districts:
       district_combined_df = country_combined_df[country_combined_df[CCHF_DISTRICT_COL] == district]
+      
       # Grab the data we only care about which is the year, total cases, total deaths and the number of cattle
       fiiltered_df = district_combined_df[columns_to_comp]
       
@@ -309,7 +320,7 @@ def gen_correlation_matrix_for_data(combined_data: pd.DataFrame, columns_to_comp
           os.mkdir(PLOTS_DIR)
 
         file_name = f"{PLOTS_DIR}/{country}_{district}_district_data_correlation_matrix_{removed_nas}.png"
-
+        plt.tight_layout()
         plt.title(f"{country}'s {district} Correlation Matrix")
         plt.savefig(f"{file_name}")
         plt.clf()

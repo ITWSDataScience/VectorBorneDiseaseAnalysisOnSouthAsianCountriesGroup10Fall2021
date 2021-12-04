@@ -90,8 +90,8 @@ def extract_arguments() -> Iterable[Union[str, list, bool]]:
   parser = argparse.ArgumentParser()
   
   parser.add_argument("-f", "--filepath", type=str, required=True, help="The filepath to the text file containing the links to pull the files from")
+  parser.add_argument("-d", "--download", required=False, action='store_true', help="Fetch all of the data specified in the file")
   parser.add_argument("-c", "--countries", type=str, nargs="+", required=True, help="The countries we wish to fetch the NDVI data for")
-  parser.add_argument("-d", "--download", type=bool, required=False, default=False, help="Fetch all of the data specified in the file")
 
   args = parser.parse_args()
 
@@ -328,18 +328,18 @@ def collapse_VGI_map_to_df(vegetation_index_map: dict) -> pd.DataFrame:
 
     csv_title += f"_{country}"
 
-    for disctrict_data in data:
+    for district_data in data:
       vgi_df[COUNTRY_KEY].append(country)
-      vgi_df[DISTRICT_KEY].append(disctrict_data[DISTRICT_KEY])
-      recorded_date_split = disctrict_data[REC_DATE_KEY].split(".")
+      vgi_df[DISTRICT_KEY].append(district_data[DISTRICT_KEY])
+      recorded_date_split = district_data[REC_DATE_KEY].split(".")
       year = recorded_date_split[0]
       month = recorded_date_split[1]
 
       vgi_df[YEAR_KEY].append(year)
       vgi_df[MONTH_KEY].append(month)
-      vgi_df[LAT_KEY].append(disctrict_data[LAT_KEY])
-      vgi_df[LON_KEY].append(disctrict_data[LON_KEY])
-      vgi_df[NVDI_KEY].append(disctrict_data[NVDI_KEY])
+      vgi_df[LAT_KEY].append(district_data[LAT_KEY])
+      vgi_df[LON_KEY].append(district_data[LON_KEY])
+      vgi_df[NVDI_KEY].append(district_data[NVDI_KEY])
   
   csv_title += ".csv"
   vgi_df = pd.DataFrame(vgi_df)
