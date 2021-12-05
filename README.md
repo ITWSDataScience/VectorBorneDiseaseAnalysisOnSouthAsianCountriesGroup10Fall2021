@@ -108,4 +108,4 @@ By issuing the command above this will spawn a local Flask server at the one's l
 
 ![Interactive CCHF Data Map](readme_images/CCHFSIS_Homepage_Map.png)
 
-Note: Credit goes to the creators of the Dengue Spread Information System team (DSIS) for allowing us to utilize their interactive map as a baseline for ours. Their Github repository can be found here: https://github.com/ITWSXInformatics/DengueSpreadInformationSystemDSIS
+Note: Credit goes to the creators of the Dengue Spread Information System (DSIS) for allowing us to utilize their interactive map as a baseline for ours. Their Github repository can be found here: https://github.com/ITWSXInformatics/DengueSpreadInformationSystemDSIS
