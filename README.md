@@ -107,3 +107,5 @@ This repository also enables users to plot the data on an interactive map. In or
 By issuing the command above this will spawn a local Flask server at the one's local url of 127.0.0.1 and at port 5000. A screenshot of the resulting interface can be seen below:
 
 ![Interactive CCHF Data Map](readme_images/CCHFSIS_Homepage_Map.png)
+
+Note: Credit goes to the creators of the Dengue Spread Information System team (DSIS) for allowing us to utilize their interactive map as a baseline for ours. Their Github repository can be found here: https://github.com/ITWSXInformatics/DengueSpreadInformationSystemDSIS
