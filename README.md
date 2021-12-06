@@ -52,8 +52,10 @@ Another sub-folder can be seen in the data directory which is the geodata direct
 The final two pieces of data located within the data directory are the following:
 
 1. combined_district_data.csv
+2. complete_data.csv
 
 * The combined_district_data.csv contains all of the combined data values from our various data sources on a district level. Please note we removed any rows containing NA's
+* The complete_data.csv contains the combined data values for the number CCHF cases and deaths, the cattle population data and the population data relating to the countries of Serbia, Pakistan, and Afghanistan 
 
 ## Fetching, Parsing, and Formatting Data ##
 Now there were two primary ways we collected the data inside our data sets. The first was manual collection where the team identified data which had already been collected such as, the cattle, promed, and population data. The second was utilizing python scripts to fetch, parse, and format the data into the format required for analysis. Each python script located in the data_fetching directly utilizes a similar workflow which is described below:
