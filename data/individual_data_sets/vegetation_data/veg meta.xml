@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<collection xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<record>
+		<dc:title>Vegetation Metadata</dc:title>
+		<dc:creator>Dominic Schroeder</dc:creator>
+		<dc:creator>Rachael White</dc:creator>
+		<dc:creator>Roma Paranjpe</dc:creator>
+		<dc:creator>Buddha Withanage</dc:creator>
+		<dc:creator>Nicole Butler</dc:creator>
+		<dc:creator>Shannon Faris</dc:creator>
+		<dc:creator>Sean Meyers</dc:creator>
+		<dc:subject>Vegetation data from 1981-2014</dc:subject>
+		<dc:description>Vegetation Data in NDVI Values for Serbia, Afghanistan and Pakistan from 1981-2014.</dc:description>
+		<dc:date>2021-12-05</dc:date>
+		<dc:type>Dataset</dc:type>
+		<dc:format>csv</dc:format>
+		<dc:identifier>https://github.com/Dtrain27/CCHF_Nasa_Data_Science/blob/main/data/individual_data_sets/vegetation_data/vgi_data.csv</dc:identifier>
+		<dc:source>https://e4ftl01.cr.usgs.gov/dc:source>
+		<dc:source>https://lpdaac.usgs.gov</dc:source>
+		<dc:language>en</dc:language>
+		<dc:rights>RPI, NASA</dc:rights>
+	</record>
+</collection>

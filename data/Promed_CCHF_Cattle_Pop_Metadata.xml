@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<collection xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<record>
+		<dc:title>CCHF Metadata</dc:title>
+		<dc:creator>Dominic Schroeder</dc:creator>
+		<dc:creator>Rachael White</dc:creator>
+		<dc:creator>Roma Paranjpe</dc:creator>
+		<dc:creator>Buddha Withanage</dc:creator>
+		<dc:creator>Nicole Butler</dc:creator>
+		<dc:creator>Shannon Faris</dc:creator>
+		<dc:creator>Sean Meyers</dc:creator>
+		<dc:subject>CCHF Cases Population and Cattle Promed Data from 1995-2019</dc:subject>
+		<dc:description>CCHF total cases and total deaths, Number of cattle and census population numbers for Serbia from 1995-2004, Pakistan from 1995-2019 and Afghanistan from 2000-2018.</dc:description>
+		<dc:date>2021-11-30</dc:date>
+		<dc:type>Dataset</dc:type>
+		<dc:format>csv</dc:format>
+		<dc:identifier>https://github.com/Dtrain27/CCHF_Nasa_Data_Science/blob/main/data/complete_data.csv</dc:identifier>
+		<dc:source>https://promedmail.org/</dc:source>
+		<dc:source>https://ourworldindata.org/grapher/cattle-livestock-count-heads?tab=chart&time=earliest..1992</dc:source>
+		<dc:source>https://data.stat.gov.rs/?caller=1302&languageCode=en-US</dc:source>
+		<dc:language>en</dc:language>
+		<dc:rights>RPI</dc:rights>
+	</record>
+</collection>

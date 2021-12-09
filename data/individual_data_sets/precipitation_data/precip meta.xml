@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<collection xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<record>
+		<dc:title>Precipitation Metadata</dc:title>
+		<dc:creator>Dominic Schroeder</dc:creator>
+		<dc:creator>Rachael White</dc:creator>
+		<dc:creator>Roma Paranjpe</dc:creator>
+		<dc:creator>Buddha Withanage</dc:creator>
+		<dc:creator>Nicole Butler</dc:creator>
+		<dc:creator>Shannon Faris</dc:creator>
+		<dc:creator>Sean Meyers</dc:creator>
+		<dc:subject>Precipitation data from 1995-2020</dc:subject>
+		<dc:description>Precipitation data in PRECTOTLAND kg/m2s for Serbia, Afghanistan and Pakistan from 1995-2020.</dc:description>
+		<dc:date>2021-12-05</dc:date>
+		<dc:type>Dataset</dc:type>
+		<dc:format>csv</dc:format>
+		<dc:identifier>https://github.com/ITWSDataScience/VectorBorneDiseaseAnalysisOnSouthAsianCountriesGroup10Fall2021/blob/main/data/individual_data_sets/precipitation_data/yearly_precipitation_data_by_district.csv</dc:identifier>
+		<dc:source>https://disc.gsfc.nasa.gov/datasets/M2TUNXFLX_5.12.4/summary?keywords=precipitation</dc:source>
+		<dc:language>en</dc:language>
+		<dc:rights>RPI, NASA</dc:rights>
+	</record>
+</collection>
+
